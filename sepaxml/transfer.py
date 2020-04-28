@@ -283,6 +283,9 @@ class SepaTransfer(SepaPaymentInitn):
         TX_nodes['CdtTrfTxInfNode'].append(TX_nodes['CdtrAgtNode'])
 
         TX_nodes['CdtrNode'].append(TX_nodes['Nm_Cdtr_Node'])
+        PstlAdr_node = self._add_address(payment)
+        if PstlAdr_node:
+            TX_nodes['CdtrNode'].append(PstlAdr_node)
         TX_nodes['CdtTrfTxInfNode'].append(TX_nodes['CdtrNode'])
 
         TX_nodes['Id_CdtrAcct_Node'].append(TX_nodes['IBAN_CdtrAcct_Node'])
@@ -292,6 +295,17 @@ class SepaTransfer(SepaPaymentInitn):
         TX_nodes['RmtInfNode'].append(TX_nodes['UstrdNode'])
         TX_nodes['CdtTrfTxInfNode'].append(TX_nodes['RmtInfNode'])
         self._add_to_batch_list(TX_nodes, payment)
+
+    def _add_address(self, payment):
+        if "address" in payment:
+            PstlAdr_node = ET.Element("PstlAdr")
+            for config_key, node_name in (("street", "StrtNm"),("postalcode", "PstCd"), ("city", "TwnNm"), ("countrycode", "Ctry")):
+                if config_key in payment["address"]:
+                    node = ET.Element(node_name)
+                    node.text = payment["address"][config_key]
+                    PstlAdr_node.append(node)
+            return PstlAdr_node
+        return None
 
     def _add_to_batch_list(self, TX, payment):
         """

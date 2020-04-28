@@ -65,6 +65,12 @@ SAMPLE_RESULT = b"""
         </CdtrAgt>
         <Cdtr>
           <Nm>Robert Schneider SA</Nm>
+          <PstlAdr>
+            <StrtNm>Rue du Lac 177</StrtNm>
+            <PstCd>2503</PstCd>
+            <TwnNm>Biel/Bienne</TwnNm>
+            <Ctry>CH</Ctry>
+          </PstlAdr>
         </Cdtr>
         <CdtrAcct>
           <Id>
@@ -72,7 +78,7 @@ SAMPLE_RESULT = b"""
           </Id>
         </CdtrAcct>
         <RmtInf>
-          <Ustrd>Test transaction1</Ustrd>
+          <Ustrd>Kontouebertrag</Ustrd>
         </RmtInf>
       </CdtTrfTxInf>
       <CdtTrfTxInf>
@@ -109,7 +115,13 @@ def test_two_debits(strf):
         "IBAN": "CH5109000000250092291",
         "amount": 1012,
         "execution_date": datetime.date.today(),
-        "description": "Test transaction1"
+        "description": "Kontouebertrag",
+        "address": {
+          "street": "Rue du Lac 177",
+          "postalcode": "2503",
+          "city": "Biel/Bienne",
+          "countrycode": "CH" # TODO: needs to be upper case, not verified
+        }
     }
     payment2 = {
         "name": "Test du Test",
