@@ -38,12 +38,18 @@ class SepaPaymentInitn:
         Build the main document node and set xml namespaces.
         """
         self._xml = ET.Element("Document")
-        self._xml.set("xmlns",
-                      "urn:iso:std:iso:20022:tech:xsd:" + self.schema)
+
+        xmlns = "urn:iso:std:iso:20022:tech:xsd:" + self.schema
+
+        if self.schema == "pain.001.001.03.ch.02":
+            xmlns = "http://www.six-interbank-clearing.com/de/pain.001.001.03.ch.02.xsd"
+            self._xml.set("xsi:schemaLocation", xmlns)
+
+        self._xml.set("xmlns", xmlns)
+        ET.register_namespace("", xmlns)
+
         self._xml.set("xmlns:xsi",
                       "http://www.w3.org/2001/XMLSchema-instance")
-        ET.register_namespace("",
-                              "urn:iso:std:iso:20022:tech:xsd:" + self.schema)
         ET.register_namespace("xsi",
                               "http://www.w3.org/2001/XMLSchema-instance")
         n = ET.Element(self.root_el)

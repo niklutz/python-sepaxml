@@ -22,7 +22,10 @@ class SepaTransfer(SepaPaymentInitn):
         encountered.
         """
         validation = ""
-        required = ["name", "currency", "IBAN", "BIC"]
+        required = ["name", "currency", "IBAN"]
+
+        if self.schema != "pain.001.001.03.ch.02":
+            required += ["BIC"]
 
         for config_item in required:
             if config_item not in config:
@@ -41,7 +44,10 @@ class SepaTransfer(SepaPaymentInitn):
         encountered.
         """
         validation = ""
-        required = ["name", "IBAN", "BIC", "amount", "description", "execution_date"]
+        required = ["name", "IBAN", "amount", "description", "execution_date"]
+
+        if self.schema != "pain.001.001.03.ch.02":
+            required += ["BIC"]
 
         for config_item in required:
             if config_item not in payment:
@@ -270,7 +276,7 @@ class SepaTransfer(SepaPaymentInitn):
         TX_nodes['CdtTrfTxInfNode'].append(TX_nodes['PmtIdNode'])
         TX_nodes['CdtTrfTxInfNode'].append(TX_nodes['AmtNode'])
 
-        if TX_nodes['BIC_CdtrAgt_Node'].text is not None:
+        if 'BIC_CdtrAgt_Node' in TX_nodes and TX_nodes['BIC_CdtrAgt_Node'].text is not None:
             TX_nodes['FinInstnId_CdtrAgt_Node'].append(
                 TX_nodes['BIC_CdtrAgt_Node'])
         TX_nodes['CdtrAgtNode'].append(TX_nodes['FinInstnId_CdtrAgt_Node'])
